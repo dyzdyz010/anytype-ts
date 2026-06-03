@@ -1,6 +1,6 @@
 # util/ - Utility Classes
 
-17 utility classes providing helper functions across the app. Accessed via `U.*` import alias.
+18 utility classes providing helper functions across the app. Accessed via `U.*` import alias.
 
 ## Utility Classes
 
@@ -23,6 +23,7 @@
 | `prism.ts` | `U.Prism` | PrismJS language map, alias resolution, dependency loading |
 | `stickyScrollbar.ts` | `U.StickyScrollbar` | Sticky horizontal scrollbar sync for dataview grid/board views |
 | `comment.ts` | `U.Comment` | Comment content part conversion (parts to/from chat message blocks) |
+| `template.ts` | `U.Template` | Resolve `{{placeholder}}` tokens (e.g. `{{today}}`) in titles created from templates |
 
 ## Non-exported Utility Files
 
@@ -47,6 +48,7 @@ These files are not in the `index.ts` barrel export but live in the `util/` dire
 | `prism.test.ts` | Prism language resolution tests |
 | `router.test.ts` | Router navigation tests |
 | `string.test.ts` | String manipulation tests |
+| `template.test.ts` | Template placeholder resolution tests |
 
 ## Import Pattern
 

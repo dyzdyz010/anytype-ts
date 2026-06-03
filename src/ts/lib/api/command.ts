@@ -1,6 +1,31 @@
 import * as I from 'Interface';
 import Storage from 'Lib/storage';
 
+/**
+ * When a new object is created from a template, its title may contain
+ * {{placeholder}} tokens (e.g. {{today}}). Resolve them into real values and
+ * persist the updated name. No-op when the title has no placeholders.
+ */
+const resolveTemplateName = (message: any) => {
+	const object = message.details;
+	if (!object || !object.id) {
+		return;
+	};
+
+	const name = String(object.name || '');
+	if (!U.Template.has(name)) {
+		return;
+	};
+
+	const resolved = U.Template.resolve(name, { now: U.Date.now(), dateFormat: S.Common.dateFormat });
+	if (resolved != name) {
+		dispatcher.request('ObjectListSetDetails', {
+			objectIds: [ object.id ],
+			details: [ { key: 'name', value: resolved } ].map(Mapper.To.Details),
+		});
+	};
+};
+
 export const InitialSetParameters = (platform: I.Platform, version: string, workDir: string, logLevel: string, doNotSendLogs: boolean, doNotSaveLogs: boolean, callBack?: (message: any) => void) => {
 	dispatcher.request('InitialSetParameters', {
 		platform,
@@ -574,7 +599,12 @@ export const BlockLinkCreateWithObject = (contextId: string, targetId: string, d
 		objectTypeUniqueKey: typeKey,
 		spaceId,
 		block: Mapper.To.Block(block),
-	}, callBack);
+	}, (message: any) => {
+		if (!message.error.code) {
+			resolveTemplateName(message);
+		};
+		callBack?.(message);
+	});
 };
 
 export const BlockLinkListSetAppearance = (contextId: string, blockIds: any[], iconSize: I.LinkIconSize, cardStyle: I.LinkCardStyle, description: I.LinkDescription, relations: string[], callBack?: (message: any) => void) => {
@@ -1090,7 +1120,12 @@ export const ObjectCreate = (details: any, flags: I.ObjectFlag[], templateId: st
 		templateId,
 		spaceId,
 		objectTypeUniqueKey: typeKey || J.Constant.default.typeKey,
-	}, callBack);
+	}, (message: any) => {
+		if (!message.error.code) {
+			resolveTemplateName(message);
+		};
+		callBack?.(message);
+	});
 };
 
 export const ObjectCreateSet = (sources: string[], details: any, templateId: string, spaceId: string, callBack?: (message: any) => void) => {
@@ -1099,7 +1134,12 @@ export const ObjectCreateSet = (sources: string[], details: any, templateId: str
 		details: Encode.struct(details),
 		templateId,
 		spaceId,
-	}, callBack);
+	}, (message: any) => {
+		if (!message.error.code) {
+			resolveTemplateName(message);
+		};
+		callBack?.(message);
+	});
 };
 
 export const ObjectCreateFromUrl = (details: any, spaceId: string, typeKey: string, url: string, withContent: boolean, templateId: string, callBack?: (message: any) => void) => {

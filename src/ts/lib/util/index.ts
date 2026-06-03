@@ -15,6 +15,7 @@ import Subscription from './subscription';
 import String from './string';
 import StickyScrollbar from './stickyScrollbar';
 import Comment from './comment';
+import Template from './template';
 
 export {
 	Common,
@@ -34,4 +35,5 @@ export {
 	String,
 	StickyScrollbar,
 	Comment,
+	Template,
 };
